@@ -33,6 +33,11 @@ public final class Constants {
       return value;
     }
   }
+
+  public static final class ArmConstants{
+    public static final double armGearRatio = 1/0.0;
+  }
+
   public static final class SwerveModuleConstants{
     public static final double wheelDiameter = Units.inchesToMeters(4);
     public static final double driveMotorGearRatio = 1/6.75;

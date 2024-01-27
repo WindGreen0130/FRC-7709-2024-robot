@@ -4,11 +4,48 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbSubsystem extends SubsystemBase {
   /** Creates a new ClimbSubsystem. */
-  public ClimbSubsystem() {}
+  private final CANSparkMax climberMotor1 = new CANSparkMax(5, MotorType.kBrushed);
+  private final CANSparkMax climberMotor2 = new CANSparkMax(6, MotorType.kBrushed);
+
+  private final Servo holdingMotor = new Servo(0);
+
+  public static boolean climb = false;
+
+  private double climPIDOutput;
+  public ClimbSubsystem() {
+    climberMotor2.follow(climberMotor1);
+
+    climberMotor1.restoreFactoryDefaults();
+    climberMotor2.restoreFactoryDefaults();
+
+    climberMotor1.setInverted(true);
+    climberMotor2.setInverted(true);
+
+    climberMotor1.burnFlash();
+    climberMotor2.burnFlash();
+  }
+
+  public void climb(){
+    climberMotor1.setVoltage(climPIDOutput*12);
+  }
+
+  public void climbDone(){
+    holdingMotor.setAngle(90);
+    climb = true;
+  }
+
+  public void climbfalse(){
+    holdingMotor.setAngle(0);
+  }
+
 
   @Override
   public void periodic() {

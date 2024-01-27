@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.BaseCommand;
 import frc.robot.commands.EndGameCommand;
@@ -35,6 +37,8 @@ public class RobotContainer {
   public static final XboxController baseJoystick = new XboxController(0);
   public static final XboxController armJoystick = new XboxController(1);
 
+  public static final JoystickButton climbDoneButton = new JoystickButton(armJoystick, 1);
+
   public RobotContainer() {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto mode", autoChooser);
@@ -42,7 +46,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    new Servo(0).getAngle();
+    climbDoneButton.onTrue(Commands.run(()->{
+      m_climbSubsystem.climbDone();
+    }, m_climbSubsystem));
   }
 
   public Command getAutonomousCommand() {
