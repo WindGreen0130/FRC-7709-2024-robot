@@ -38,6 +38,11 @@ public final class Constants {
     public static final double armGearRatio = 1/0.0;
     public static final double armOrigin = 0.908;
     public static final double armTaking = 0.0;
+
+    public static final int floorButton = 1;
+    public static final int shootButton = 2;
+    public static final int primetiveButton = 3;
+    public static final int takeButton = 4;
   }
 
   public static final class ApriltagConstants{
