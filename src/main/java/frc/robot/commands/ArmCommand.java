@@ -32,14 +32,16 @@ public class ArmCommand extends Command {
     }
     switch (k) {
       case 1:
-        armSubsystem.take();
+        armSubsystem.armPIDCalculate(Constants.ArmConstants.armOrigin);
         break;
       case 2:
         armSubsystem.shoot();
         break;
       case 3:
-        armSubsystem.armPIDCalculate(Constants.ArmConstants.armOrigin);
+        armSubsystem.armPIDCalculate(Constants.ArmConstants.armTaking);
         break;
+      case 4:
+        armSubsystem.take();
       default:
         armSubsystem.armPIDCalculate(armSubsystem.armAimSetpoint);
         break;
