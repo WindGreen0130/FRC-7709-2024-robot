@@ -11,8 +11,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import static frc.robot.Constants.ApriltagConstants.*;
 
@@ -24,17 +24,20 @@ public class ArmSubsystem extends SubsystemBase {
   private final CANSparkMax shooterMotor2 = new CANSparkMax(4, MotorType.kBrushless);
   private final CANSparkMax intakeMotor = new CANSparkMax(5, MotorType.kBrushless);
   
-  private final DigitalInput armDigitalInput = new DigitalInput(0);
+  private final CANcoder armCaNcoder = new CANcoder(0);
 
   private final ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0, 0);
   private final PIDController armPID = new PIDController(0, 0, 0);
-  public static double armAimSetpoint;
+
+  private final double armMaxOutput = 0.3;
+
+
   private double armFeedforwardOutput;
   private double armPIDOutput;
-private final CANcoder armCaNcoder = new CANcoder(0);
+  private double armMoveOutput;
 
   private double armPosition;
-  private double armMoveOutput;
+  public double armAimSetpoint;
   private double distance;
 
   public ArmSubsystem() {
@@ -85,5 +88,10 @@ private final CANcoder armCaNcoder = new CANcoder(0);
     armFeedforwardOutput = armFeedforward.calculate(armMoveOutput, armFeedforwardOutput);
     armPosition = armCaNcoder.getPosition().getValueAsDouble();
     armAimSetpoint = -90 + Math.toDegrees(Math.atan((distance + limelightToArmDistance)/(speakerHeight - armHeight)));
+
+    armPIDOutput = armPID.calculate(armPosition, armAimSetpoint);
+
+    armPIDOutput = Constants.setMaxOutput(armPIDOutput, armMaxOutput);
+
   }
 }
