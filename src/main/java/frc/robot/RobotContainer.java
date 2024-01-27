@@ -22,20 +22,22 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
+  //Subsystem
   private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
-  // Chooser
-  private final SendableChooser<Command> autoChooser;
+  //Command
   public final ArmCommand m_armcommand = new ArmCommand(m_armSubsystem);
   public final BaseCommand m_baseCommand = new BaseCommand(m_swerveSubsystem);
   public final EndGameCommand m_endgameCommand = new EndGameCommand(m_climbSubsystem);
   public final VisionCommand m_visionCommand = new VisionCommand(m_swerveSubsystem, m_armSubsystem, m_visionSubsystem);
-
+  // Chooser
+  private final SendableChooser<Command> autoChooser;
+  //Joystick
   public static final XboxController baseJoystick = new XboxController(0);
   public static final XboxController armJoystick = new XboxController(1);
-
+  //Button
   public static final JoystickButton climbDoneButton = new JoystickButton(armJoystick, 1);
 
   public RobotContainer() {
