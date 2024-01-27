@@ -36,6 +36,8 @@ public final class Constants {
 
   public static final class ArmConstants{
     public static final double armGearRatio = 1/0.0;
+    public static final double armOrigin = 0.908;
+    public static final double armTaking = 0.0;
   }
 
   public static final class SwerveModuleConstants{
