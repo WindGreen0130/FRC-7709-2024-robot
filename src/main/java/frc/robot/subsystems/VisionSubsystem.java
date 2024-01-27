@@ -21,7 +21,27 @@ import static frc.robot.Constants.ApriltagConstants.*;
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {}
+  private final PhotonCamera photonLimelight = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 
+  private final PIDController yMovePID = new PIDController(0.005, 0, 0);
+  private final PIDController xMovePID = new PIDController(0.0030, 0, 0);
+  private final PIDController turnPID = new PIDController(0.005, 0, 0);
+
+  private final Optional<Alliance> alliance = DriverStation.getAlliance();
+
+  private double yMovePIDOutput, xMovePIDOutput, turnPIDOutput;
+
+  private final double maxXMovepPIDOutput = 0.3; 
+  private final double maxYMovePIDOutput = 0.3;
+  private final double maxTurnPIDOutput = 0.5;
+
+  public double botXValue;
+  private double botYValue;
+  private double botZValue;
+  private double xSetpoint;
+  private double ySetpoint;
+  private double zSetpoint;
+  private int targetID;
   @Override
   public void periodic() {
     

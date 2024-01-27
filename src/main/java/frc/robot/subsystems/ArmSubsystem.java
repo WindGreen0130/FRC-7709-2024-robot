@@ -28,13 +28,14 @@ public class ArmSubsystem extends SubsystemBase {
 
   private final ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0, 0);
   private final PIDController armPID = new PIDController(0, 0, 0);
-  public static double aimedPoint;
+  public static double armAimSetpoint;
   private double armFeedforwardOutput;
   private double armPIDOutput;
+private final CANcoder armCaNcoder = new CANcoder(0);
 
-
+  private double armPosition;
   private double armMoveOutput;
-
+  private double distance;
 
   public ArmSubsystem() {
     armMotor2.follow(armMotor1);
@@ -82,6 +83,8 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     armFeedforwardOutput = armFeedforward.calculate(armMoveOutput, armFeedforwardOutput);
+    armPosition = armCaNcoder.getPosition().getValueAsDouble();
+    armAimSetpoint = -90 + Math.toDegrees(Math.atan((distance + limelightToArmDistance)/(speakerHeight - armHeight)));
     // This method will be called once per scheduler run
   }
 }
