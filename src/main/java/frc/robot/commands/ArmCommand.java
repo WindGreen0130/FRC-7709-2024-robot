@@ -5,10 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmCommand extends Command {
   /** Creates a new ArmCommand. */
-  public ArmCommand() {
+  private final ArmSubsystem armSubsystem;
+  public ArmCommand(ArmSubsystem _armsubsystem) {
+    this.armSubsystem = _armsubsystem;
+    addRequirements(armSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

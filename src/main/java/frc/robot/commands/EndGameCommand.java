@@ -5,10 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ClimbSubsystem;
 
 public class EndGameCommand extends Command {
   /** Creates a new EndGameCommand. */
-  public EndGameCommand() {
+  private final ClimbSubsystem climbsubsystem;
+  public EndGameCommand(ClimbSubsystem _climbSubsystem) {
+    this.climbsubsystem = _climbSubsystem;
+    addRequirements(climbsubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
