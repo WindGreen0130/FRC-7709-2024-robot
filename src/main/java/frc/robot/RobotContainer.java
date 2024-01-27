@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,7 +42,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-
+    new Servo(0).getAngle();
   }
 
   public Command getAutonomousCommand() {
