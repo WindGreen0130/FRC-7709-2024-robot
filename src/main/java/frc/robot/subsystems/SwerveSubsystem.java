@@ -2,6 +2,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -9,9 +14,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.SwerveModuleConstants;
+
 import static frc.robot.Constants.SwerveConstants.*;
+
+import java.util.Optional;
 
 
 public class SwerveSubsystem extends SubsystemBase{
@@ -19,6 +32,7 @@ public class SwerveSubsystem extends SubsystemBase{
     private final Pigeon2 gyro = new Pigeon2(gyroID);
     private SwerveDriveOdometry mOdometry;
     private final Pigeon2Configuration gyroConfig = new Pigeon2Configuration();
+    private final Field2d field = new Field2d();
     public SwerveSubsystem(){
         gyroConfig.withMountPose(new MountPoseConfigs().withMountPoseYaw(180));
         gyro.getConfigurator().apply(gyroConfig);
@@ -57,6 +71,33 @@ public class SwerveSubsystem extends SubsystemBase{
             swerveKinematics, 
             gyro.getRotation2d(), 
             getModulePosition());
+        AutoBuilder.configureHolonomic(
+            this::getPose, 
+            this::setPose, 
+            this::getSpeeds, 
+            this::drive_auto,
+            new HolonomicPathFollowerConfig(
+                new PIDConstants(4.5, 0, 0), // Translation constants 
+                new PIDConstants(2, 0, 0.002), // Rotation constants 
+                SwerveModuleConstants.maxDriveMotorSpeed, 
+                Units.inchesToMeters(14.32), // Drive base radius (distance from center to furthest module) 
+                new ReplanningConfig()
+            ),
+            () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+                Optional<Alliance> alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+            },
+            this
+        );
+            // Set up custom logging to add the current path to a field 2d widget
+        PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+        SmartDashboard.putData("Field", field);
     }
     public SwerveModulePosition[] getModulePosition(){
         return new SwerveModulePosition[]{
@@ -91,13 +132,21 @@ public class SwerveSubsystem extends SubsystemBase{
         }
         setModuleStates(states);
     }
+    // Auto Drive
+    public void drive_auto(ChassisSpeeds robotRelativeSpeeds) {
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+        SwerveModuleState[] states = swerveKinematics.toSwerveModuleStates(targetSpeeds);
+        setModuleStates(states);
+    }
     public Pose2d getPose(){
         return mOdometry.getPoseMeters();
     }
     public void setPose(Pose2d pose){
         mOdometry.resetPosition(gyro.getRotation2d(), getModulePosition(), pose);
     }
-
+    public ChassisSpeeds getSpeeds() {
+        return swerveKinematics.toChassisSpeeds(getModuleStates());
+    }
     public void resetGyro(){
         gyro.reset();
     }

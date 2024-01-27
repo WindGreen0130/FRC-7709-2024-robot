@@ -24,6 +24,7 @@ public class BaseCommand extends Command {
   public BaseCommand(SwerveSubsystem _swerveSubsystem) {
     this.swerveSubsystem = _swerveSubsystem;
     addRequirements(_swerveSubsystem);
+    
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

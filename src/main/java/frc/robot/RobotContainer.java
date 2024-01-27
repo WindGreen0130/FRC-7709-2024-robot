@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.BaseCommand;
@@ -20,7 +24,8 @@ public class RobotContainer {
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
-
+  // Chooser
+  private final SendableChooser<Command> autoChooser;
   public final ArmCommand m_armcommand = new ArmCommand(m_armSubsystem);
   public final BaseCommand m_baseCommand = new BaseCommand(m_swerveSubsystem);
   public final EndGameCommand m_endgameCommand = new EndGameCommand(m_climbSubsystem);
@@ -30,6 +35,8 @@ public class RobotContainer {
   public static final XboxController armJoystick = new XboxController(1);
 
   public RobotContainer() {
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto mode", autoChooser);
     configureBindings();
   }
 
