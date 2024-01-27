@@ -19,7 +19,8 @@ import frc.robot.Constants;
 import static frc.robot.Constants.ApriltagConstants.*;
 
 public class VisionSubsystem extends SubsystemBase {
-  /** Creates a new LimeLightSubsystem. */
+  /** Creates a new VisionSubsystem. */
+  public VisionSubsystem() {}
   private final PhotonCamera photonLimelight = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 
   private final PIDController yMovePID = new PIDController(0.005, 0, 0);
@@ -41,23 +42,6 @@ public class VisionSubsystem extends SubsystemBase {
   private double ySetpoint;
   private double zSetpoint;
   private int targetID;
-
-  public VisionSubsystem() {
-    
-  }
-
-  public double xMove(){
-    return xMovePIDOutput;
-  }
-
-  public double yMove(){
-    return yMovePIDOutput;
-  }
-
-  public double turn(){
-    return turnPIDOutput;
-  }
-
   @Override
   public void periodic() {
     
