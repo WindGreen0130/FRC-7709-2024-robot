@@ -85,6 +85,5 @@ private final CANcoder armCaNcoder = new CANcoder(0);
     armFeedforwardOutput = armFeedforward.calculate(armMoveOutput, armFeedforwardOutput);
     armPosition = armCaNcoder.getPosition().getValueAsDouble();
     armAimSetpoint = -90 + Math.toDegrees(Math.atan((distance + limelightToArmDistance)/(speakerHeight - armHeight)));
-    // This method will be called once per scheduler run
   }
 }
