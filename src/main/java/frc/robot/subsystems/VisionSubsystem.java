@@ -64,6 +64,7 @@ public class VisionSubsystem extends SubsystemBase {
     PhotonPipelineResult result = photonLimelight.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
     boolean hasTarget = result.hasTargets();
+
     if(hasTarget){
       botXValue = target.getBestCameraToTarget().getX()*100;
       botYValue = target.getBestCameraToTarget().getY();
@@ -97,6 +98,7 @@ public class VisionSubsystem extends SubsystemBase {
       xSetpoint = 0;
       ySetpoint = 0;
     }
+    
     yMovePIDOutput = yMovePID.calculate(botYValue, xSetpoint);
     xMovePIDOutput = xMovePID.calculate(botXValue, ySetpoint);
     turnPIDOutput = -turnPID.calculate(botZValue, zSetpoint);

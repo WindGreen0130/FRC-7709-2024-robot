@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimbSubsystem;
+import static frc.robot.RobotContainer.*;
 
 public class EndGameCommand extends Command {
   /** Creates a new EndGameCommand. */
@@ -24,7 +25,9 @@ public class EndGameCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    climbsubsystem.climb(armJoystick.getRawAxis(1)*0.3, armJoystick.getRawAxis(5)*0.3);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

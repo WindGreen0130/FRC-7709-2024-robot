@@ -19,10 +19,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
   public static boolean climb = false;
 
-  private double climPIDOutput;
   public ClimbSubsystem() {
-    climberMotor2.follow(climberMotor1);
-
     climberMotor1.restoreFactoryDefaults();
     climberMotor2.restoreFactoryDefaults();
 
@@ -33,8 +30,9 @@ public class ClimbSubsystem extends SubsystemBase {
     climberMotor2.burnFlash();
   }
 
-  public void climb(){
-    climberMotor1.setVoltage(climPIDOutput*12);
+  public void climb(double leftSpeed, double rightSpeed){
+    climberMotor1.set(leftSpeed);
+    climberMotor2.set(rightSpeed);
   }
 
   public void climbDone(){

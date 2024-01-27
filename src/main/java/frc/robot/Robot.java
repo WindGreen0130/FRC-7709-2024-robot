@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ClimbSubsystem;
+import static frc.robot.RobotContainer.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -78,6 +79,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.m_baseCommand.schedule();
+    m_robotContainer.m_armcommand.schedule();
+    m_robotContainer.m_endgameCommand.schedule();
   }
 
   /** This function is called periodically during operator control. */
@@ -86,7 +90,19 @@ public class Robot extends TimedRobot {
     if(ClimbSubsystem.climb){
       m_robotContainer.m_endgameCommand.cancel();
     }
-    
+
+    if(baseJoystick.getRawAxis(1) > 0.1){
+      m_robotContainer.m_baseCommand.cancel();
+      m_robotContainer.m_armcommand.cancel();
+      m_robotContainer.m_visionCommand.schedule();
+    }
+    else{
+      m_robotContainer.m_baseCommand.schedule();
+      m_robotContainer.m_armcommand.schedule();
+      if(m_robotContainer.m_visionCommand.isScheduled()){
+        m_robotContainer.m_visionCommand.cancel();
+      }
+    }
   }
 
   @Override
