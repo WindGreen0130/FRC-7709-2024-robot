@@ -77,7 +77,7 @@ private final CANcoder armCaNcoder = new CANcoder(0);
     shooterMotor1.set(0);
     shooterMotor2.set(0);
   }
-  public void ArmPIDCalculate(double setpoint){
+  public void armPIDCalculate(double setpoint){
     armPID.calculate(armPosition,setpoint);
   }
   @Override
