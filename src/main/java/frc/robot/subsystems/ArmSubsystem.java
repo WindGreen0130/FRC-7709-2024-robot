@@ -14,6 +14,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static frc.robot.Constants.ApriltagConstants.*;
+
 public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   private final CANSparkMax armMotor1 = new CANSparkMax(1, MotorType.kBrushless);
@@ -30,14 +32,13 @@ public class ArmSubsystem extends SubsystemBase {
   private double armFeedforwardOutput;
   private double armPIDOutput;
 
-  private double armPosition; 
+
   private double armMoveOutput;
-  private final CANcoder armCANcoder = new CANcoder(0);
-  
-// 1 2 3 4 6
+
+
   public ArmSubsystem() {
     armMotor2.follow(armMotor1);
-
+    Math.atan(6);
     armMotor1.restoreFactoryDefaults();
     armMotor2.restoreFactoryDefaults();
     intakeMotor.restoreFactoryDefaults();
@@ -80,8 +81,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    armFeedforwardOutput = armFeedforward.calculate(0, 0);
-    armPosition = armCANcoder.getPosition().getValueAsDouble();
+    armFeedforwardOutput = armFeedforward.calculate(armMoveOutput, armFeedforwardOutput);
     // This method will be called once per scheduler run
   }
 }

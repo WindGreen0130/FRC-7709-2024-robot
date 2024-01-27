@@ -40,6 +40,22 @@ public final class Constants {
     public static final double armTaking = 0.0;
   }
 
+  public static final class ApriltagConstants{
+    public static final int redSpeakerID1 = 3;
+    public static final int redSpeakerID2 = 4;
+    public static final int redAMPID = 5;
+    public static final int blueSpeakerID1 = 7;
+    public static final int blueSpeakerID2 = 8;
+    public static final int blueAMPID = 6;
+    public static final double speakerZSetpoint = 0.0;
+    public static final double ampXSetpoint = 0.0;
+    public static final double ampYSetpoint = 0.0;
+    public static final double ampZSetpoint = 0.0;
+    public static final double speakerHeight = 204.5;//cm
+    public static final double armHeight = 0;
+    public static final double limelightToArmDistance = 0;
+  }
+
   public static final class SwerveModuleConstants{
     public static final double wheelDiameter = Units.inchesToMeters(4);
     public static final double driveMotorGearRatio = 1/6.75;
