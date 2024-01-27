@@ -13,6 +13,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static frc.robot.Constants.ApriltagConstants.*;
+
 public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   private final CANSparkMax armMotor1 = new CANSparkMax(1, MotorType.kBrushless);
@@ -25,14 +27,15 @@ public class ArmSubsystem extends SubsystemBase {
   
   private double armFeedforwardOutput;
   private double armPIDOutput;
-
-
   private double armMoveOutput;
+
+  private double armAimSetpoint;
+  private double distance;
 
 
   public ArmSubsystem() {
     armMotor2.follow(armMotor1);
-
+    Math.atan(6);
     armMotor1.restoreFactoryDefaults();
     armMotor2.restoreFactoryDefaults();
 
@@ -49,6 +52,7 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     armFeedforwardOutput = armFeedforward.calculate(armMoveOutput, armFeedforwardOutput);
-    // This method will be called once per scheduler run
+    
+    armAimSetpoint = -90 + Math.toDegrees(Math.atan((distance + limelightToArmDistance)/(speakerHeight - armHeight)));
   }
 }
