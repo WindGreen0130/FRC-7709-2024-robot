@@ -39,6 +39,7 @@ public class RobotContainer {
   public static final XboxController armJoystick = new XboxController(1);
   //Button
   public static final JoystickButton climbDoneButton = new JoystickButton(armJoystick, 1);
+  public static final JoystickButton resetButton = new JoystickButton(baseJoystick, 2);
 
   public RobotContainer() {
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -50,9 +51,13 @@ public class RobotContainer {
     climbDoneButton.onTrue(Commands.run(()->{
       m_climbSubsystem.climbDone();
     }, m_climbSubsystem));
+
+    resetButton.onTrue(Commands.runOnce(()->{
+      m_swerveSubsystem.resetGyro();
+    }));
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return autoChooser.getSelected();
   }
 }

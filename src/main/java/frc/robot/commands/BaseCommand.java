@@ -35,9 +35,16 @@ public class BaseCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    xspeed = xLimiter.calculate(Constants.SwerveConstants.joysickValue(baseJoystick.getRawAxis(1), deadValue)*0.6);
-    ySpeed = yLimiter.calculate(Constants.SwerveConstants.joysickValue(baseJoystick.getRawAxis(0), deadValue)*0.6);
-    zSpeed = Constants.SwerveConstants.joysickValue(baseJoystick.getRawAxis(4), deadValue);
+    if(baseJoystick.getRawButton(6)){
+      xspeed = xLimiter.calculate(Constants.SwerveConstants.joysickValue(baseJoystick.getRawAxis(1), deadValue)*0.4);
+      ySpeed = yLimiter.calculate(Constants.SwerveConstants.joysickValue(baseJoystick.getRawAxis(0), deadValue)*0.4);
+      zSpeed = Constants.SwerveConstants.joysickValue(baseJoystick.getRawAxis(4), deadValue)*0.4;
+    }
+    else{
+      xspeed = xLimiter.calculate(Constants.SwerveConstants.joysickValue(baseJoystick.getRawAxis(1), deadValue)*0.8);
+      ySpeed = yLimiter.calculate(Constants.SwerveConstants.joysickValue(baseJoystick.getRawAxis(0), deadValue)*0.8);
+      zSpeed = Constants.SwerveConstants.joysickValue(baseJoystick.getRawAxis(4), deadValue)*0.8;
+    }
     swerveSubsystem.drive(xspeed, ySpeed, zSpeed, true);
   }
 

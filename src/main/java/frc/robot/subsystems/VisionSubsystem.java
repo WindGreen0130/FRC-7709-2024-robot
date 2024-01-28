@@ -29,7 +29,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private final Optional<Alliance> alliance = DriverStation.getAlliance();
 
-  private double yMovePIDOutput, xMovePIDOutput, turnPIDOutput;
+  public double yMovePIDOutput, xMovePIDOutput, turnPIDOutput;
 
   private final double maxXMovepPIDOutput = 0.3; 
   private final double maxYMovePIDOutput = 0.3;

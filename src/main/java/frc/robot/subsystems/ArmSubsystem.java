@@ -47,7 +47,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   private double armAngle;
   private double armRadians;
+  private double armErrorValue;
 
+  private double armSetpoint;
   public double armAimSetpoint;
   private double distance;
   private double armAngularVelocity;
@@ -105,21 +107,28 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void armPIDCalculate(double setpoint){
-    armPID.calculate(armAngle,setpoint);
+    armSetpoint = setpoint;
+    if(armErrorValue > 3){
+      armMotor1.set(armMoveOutput);
+    }
+    else{
+      armMotor1.set(armFeedforwardOutput);
+    }
   }
 
-  public void getAimSetpoint(double distance){
+  public void getObjectDistance(double distance){
     this.distance = distance;
   }
-  
+
   @Override
   public void periodic() {
     armAngle = armCancoder.getPosition().getValueAsDouble();
     armAngularVelocity = armEncoder.getVelocity()*toAngularVelocity;
     armRadians = Math.toRadians(armAngle);
     armAimSetpoint = -90 + Math.toDegrees(Math.atan((distance + limelightToArmDistance)/(speakerHeight - armHeight)));
+    armErrorValue = Math.abs(armSetpoint - armAngle);
 
-    armFeedforwardOutput = armFeedforward.calculate(armRadians, armAngularVelocity);
+    armFeedforwardOutput = armFeedforward.calculate(armRadians, armAngularVelocity)/12;
     armPIDOutput = armPID.calculate(armAngle, armAimSetpoint);
     armPIDOutput = Constants.setMaxOutput(armPIDOutput, armMaxOutput);
     armMoveOutput = armPIDOutput + armFeedforwardOutput;

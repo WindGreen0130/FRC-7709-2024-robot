@@ -14,6 +14,9 @@ public class VisionCommand extends Command {
   private final SwerveSubsystem swerveSubsystem;
   private final ArmSubsystem armSubsystem;
   private final VisionSubsystem visionSubsystem;
+  private double xSpeed;
+  private double ySpeed;
+  private double zSpeed;
   public VisionCommand(SwerveSubsystem _swerveSubsystem, ArmSubsystem _armSubsystem, VisionSubsystem _visionSubsystem) {
     this.swerveSubsystem = _swerveSubsystem;
     this.armSubsystem = _armSubsystem;
@@ -28,7 +31,14 @@ public class VisionCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    xSpeed = visionSubsystem.xMovePIDOutput;
+    ySpeed = visionSubsystem.yMovePIDOutput;
+    zSpeed = visionSubsystem.turnPIDOutput;
+    swerveSubsystem.drive(xSpeed, ySpeed, zSpeed, false);
+    armSubsystem.getObjectDistance(visionSubsystem.botXValue);
+    armSubsystem.armPIDCalculate(armSubsystem.armAimSetpoint);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
