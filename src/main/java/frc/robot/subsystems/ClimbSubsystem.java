@@ -12,9 +12,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbSubsystem extends SubsystemBase {
   /** Creates a new ClimbSubsystem. */
+  //Motor
   private final CANSparkMax climberMotor1 = new CANSparkMax(5, MotorType.kBrushed);
   private final CANSparkMax climberMotor2 = new CANSparkMax(6, MotorType.kBrushed);
-
+  //Servo
   private final Servo holdingMotor = new Servo(0);
 
   public static boolean climb = false;

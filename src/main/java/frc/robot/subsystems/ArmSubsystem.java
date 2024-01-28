@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -22,30 +23,34 @@ import frc.robot.commands.ArmCommand;
 import static frc.robot.Constants.ApriltagConstants.*;
 
 public class ArmSubsystem extends SubsystemBase {
-  /** Creates a new ArmSubsystem. */
+  //Motor
   private final CANSparkMax armMotor1 = new CANSparkMax(1, MotorType.kBrushless);
   private final CANSparkMax armMotor2 = new CANSparkMax(2, MotorType.kBrushless);
   private final CANSparkMax shooterMotor1 = new CANSparkMax(3, MotorType.kBrushless);
   private final CANSparkMax shooterMotor2 = new CANSparkMax(4, MotorType.kBrushless);
   private final CANSparkMax intakeMotor = new CANSparkMax(5, MotorType.kBrushless);
-  
-  private final CANcoder armCaNcoder = new CANcoder(0);
+  //Eancoder
+  private final CANcoder armCancoder = new CANcoder(0);
   private final CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
-
+  private final RelativeEncoder armEncoder = armMotor1.getEncoder();
+  //Controller
   private final ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0, 0);
   private final PIDController armPID = new PIDController(0, 0, 0);
 
   private final double armMaxOutput = 0.3;
   private final double absoluteEncoderOffset = 0;
-
+  private final double toAngularVelocity = Math.PI*2/60;
 
   private double armFeedforwardOutput;
   private double armPIDOutput;
   private double armMoveOutput;
 
-  private double armPosition;
+  private double armAngle;
+  private double armRadians;
+
   public double armAimSetpoint;
   private double distance;
+  private double armAngularVelocity;
 
   public ArmSubsystem() {
     armMotor2.follow(armMotor1);
@@ -77,9 +82,11 @@ public class ArmSubsystem extends SubsystemBase {
     cancoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffset;
     cancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
   }
+
   public void take(){
     intakeMotor.set(0.5);
   }
+
   public void shoot(){
     shooterMotor1.set(0.5);
     shooterMotor2.set(0.5);
@@ -90,25 +97,36 @@ public class ArmSubsystem extends SubsystemBase {
       intakeMotor.set(0);
     }
   }
+
   public void stop(){
     intakeMotor.set(0);
     shooterMotor1.set(0);
     shooterMotor2.set(0);
   }
+
   public void armPIDCalculate(double setpoint){
-    armPID.calculate(armPosition,setpoint);
+    armPID.calculate(armAngle,setpoint);
   }
+
+  public void getAimSetpoint(double distance){
+    this.distance = distance;
+  }
+  
   @Override
   public void periodic() {
-    armFeedforwardOutput = armFeedforward.calculate(armMoveOutput, armFeedforwardOutput);
-    armPosition = armCaNcoder.getPosition().getValueAsDouble();
+    armAngle = armCancoder.getPosition().getValueAsDouble();
+    armAngularVelocity = armEncoder.getVelocity()*toAngularVelocity;
+    armRadians = Math.toRadians(armAngle);
     armAimSetpoint = -90 + Math.toDegrees(Math.atan((distance + limelightToArmDistance)/(speakerHeight - armHeight)));
 
-    armPIDOutput = armPID.calculate(armPosition, armAimSetpoint);
-
+    armFeedforwardOutput = armFeedforward.calculate(armRadians, armAngularVelocity);
+    armPIDOutput = armPID.calculate(armAngle, armAimSetpoint);
     armPIDOutput = Constants.setMaxOutput(armPIDOutput, armMaxOutput);
+    armMoveOutput = armPIDOutput + armFeedforwardOutput;
 
     SmartDashboard.putString("Mode", ArmCommand.mode);
-
+    SmartDashboard.putNumber("armPIDOutput", armPIDOutput);
+    SmartDashboard.putNumber("armFeedforwardOutput", armFeedforwardOutput);
+    SmartDashboard.putNumber("armMoveOutput", armMoveOutput);
   }
 }
